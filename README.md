@@ -1,6 +1,6 @@
-# environment_nuxt
-Nuxt.js × TypeScript の環境構築のテンプレです。  
-詳細はディレクトリを確認の上、自由に活用してください！！！
+# mode_twitter
+やなぎくんの課題
+Twitterっぽいアプリを作ります。
 
 ## Depends
 - Nuxt.js　^2.14.12
@@ -12,6 +12,8 @@ Nuxt.js × TypeScript の環境構築のテンプレです。
 - ress
 - Font Optimizations
 - Vuetify
+- compositon API
+- firebase
 - axios
 - esLint 
 - GitHub CI（Continuous Integration）
@@ -34,5 +36,3 @@ $ yarn start
 # generate static project
 $ yarn generate
 ```
-
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
