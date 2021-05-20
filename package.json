@@ -20,16 +20,17 @@
     "@nuxtjs/pwa": "^3.3.5",
     "@vue-composable/cookie": "^1.0.0-beta.23",
     "core-js": "^3.11.0",
+    "core-js": "^3.12.1",
     "firebase": "^8.6.1",
     "firebase-admin": "^9.8.0",
     "js-cookie": "^2.2.1",
     "node-sass": "^5.0.0",
-    "nuxt": "^2.15.4",
     "sass-loader": "10.1.1",
     "vuex": "^4.0.0"
+    "nuxt": "^2.15.6",
   },
   "devDependencies": {
-    "@nuxt/types": "^2.15.4",
+    "@nuxt/types": "^2.15.6",
     "@nuxt/typescript-build": "^2.0.4",
     "@nuxtjs/eslint-config-typescript": "^6.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",
@@ -37,12 +38,12 @@
     "@nuxtjs/style-resources": "^1.0.0",
     "@nuxtjs/vuetify": "^1.11.3",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.25.0",
+    "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-nuxt": "^2.0.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-vue": "^7.9.0",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.0",
     "ress": "^4.0.0"
   }
 }
