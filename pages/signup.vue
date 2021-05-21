@@ -11,12 +11,14 @@
 
 <script lang="ts">
 import { defineComponent, useRouter } from '@nuxtjs/composition-api'
+import { useStore } from 'vuex'
 import firebase, { auth } from '~/plugins/firebase'
 import { useCookie } from "@vue-composable/cookie"
 
 export default defineComponent({
   setup() {
     const router = useRouter()
+    const store = useStore()
 
     const googleSignUp = async() => {
       try {
