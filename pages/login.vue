@@ -11,29 +11,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRouter } from '@nuxtjs/composition-api'
-import firebase, { auth } from '~/plugins/firebase'
-import { useCookie } from "@vue-composable/cookie"
+import { defineComponent, useContext, useRouter } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   setup() {
+    const { store } = useContext()
     const router = useRouter()
 
     const googleLogin = async() => {
-      let { cookie } = useCookie("isSignIn", 'false', { maxAge: 60 * 60 * 24 * 7　});
-
-      try {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        const res = await auth.signInWithPopup(provider)
-
-        if (!res) throw Error;
-
-        cookie.value = 'true'
-        router.push('/')
-      } catch {
-        alert('ログインに失敗しました。再度お試しください。');
-        return false
-      }
+      await store.dispatch('auth/login')
+      router.push('/')
     }
     return {
       googleLogin,
@@ -77,6 +64,10 @@ export default defineComponent({
       border: 1px solid $ui-black;
       border-radius: 8px;
       text-decoration: none;
+      transition: .3s;
+      &:hover {
+        box-shadow: 4px 4px 2px $ui-border;
+      }
       img {
         width: 24px;
         height: 24px;
