@@ -17,12 +17,12 @@ export default defineComponent({
     const { store } = useContext()
     const router = useRouter()
 
-    const googleLogin = async() => {
-      await store.dispatch('auth/login')
+    const googleSignUp = async() => {
+      await store.dispatch('auth/signup')
       router.push('/')
     }
     return {
-      googleLogin,
+      googleSignUp,
     }
   },
 })
