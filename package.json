@@ -21,7 +21,7 @@
     "core-js": "^3.12.1",
     "firebase": "^8.6.2",
     "firebase-admin": "^9.8.0",
-    "node-sass": "^5.0.0",
+    "node-sass": "^6.0.0",
     "nuxt": "^2.15.6",
     "sass-loader": "10.1.1"
   },
