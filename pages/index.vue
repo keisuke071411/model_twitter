@@ -1,9 +1,8 @@
 <template>
   <section>
     <h1>Hello World!</h1>
-    <button>ログインする</button>
     {{ currentUser }}
-    <img :src="currentUser.imagePath" :alt="currentUser.displayName" />
+    <img v-if="currentUser" :src="currentUser.imagePath" :alt="currentUser.displayName" />
   </section>
 </template>
 
