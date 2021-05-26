@@ -10,14 +10,10 @@ export const state = () => ({
 export type RootState = ReturnType<typeof state>;
 
 export const getters: GetterTree<RootState, RootState> = {
-  login: state => state.isLogin,
+  isLogin: state => state.isLogin,
 }
 
 export const mutations: MutationTree<RootState> = {
-  INIT(state) {
-    state.isLogin = false
-    state.currentUser = null
-  },
   SET_USER(state, payload) {
     state.isLogin = true
     state.currentUser = payload
@@ -30,8 +26,19 @@ export const mutations: MutationTree<RootState> = {
 }
 
 export const actions: ActionTree<RootState, RootState> = {
-  init({ commit }) {
-    commit('INIT')
+  onAuthStateChanged({ commit, getters }, { authUser }) {
+    if (!authUser) {
+      commit('RESET')
+      return
+    } else if (getters.isLogin) {
+      return
+    }
+
+    commit('SET_USER', {
+      uid: authUser.uid,
+      displayName: authUser.displayName,
+      imagePath: authUser.photoURL,
+    } as currentUser)
   },
   async login({ commit }): Promise<void> {
     try {
@@ -45,6 +52,30 @@ export const actions: ActionTree<RootState, RootState> = {
         displayName: res.user?.displayName as string,
         imagePath: res.user?.photoURL as string
       }
+
+      commit('SET_USER', currentUser)
+    } catch {
+      return alert('アカウント作成に失敗しました。再度お試しください。');
+    }
+  },
+  async signup({ commit }): Promise<void> {
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const res = await auth.signInWithPopup(provider)
+
+      if (!res) throw Error;
+
+      const currentUser: currentUser = {
+        uid: res.user?.uid as string,
+        displayName: res.user?.displayName as string,
+        imagePath: res.user?.photoURL as string
+      }
+
+      await firebase.firestore().collection('users').doc(currentUser.uid).set({
+        uid: currentUser.uid as string,
+        displayName: currentUser.displayName as string,
+        imagePath: currentUser.imagePath as string
+      })
 
       commit('SET_USER', currentUser)
     } catch {
