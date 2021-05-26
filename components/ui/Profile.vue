@@ -16,7 +16,8 @@ export default defineComponent({
       type: Object as PropType<currentUser>
     }
   },
-  setup() {
+  setup(props) {
+    console.log(props)
   },
 })
 </script>

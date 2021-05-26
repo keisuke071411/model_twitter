@@ -2,17 +2,20 @@
   <main class="main">
     <section class="user">
       <div class="user_logo"><img src="~/static/images/logo.svg" alt="Hack'z Memo" /></div>
-      <div class="user_profile">
-        <div class="user_profile-img"><img :src="currentUser.imagePath" :alt="currentUser.displayName" /></div>
-        <p class="user_profile-name">{{ currentUser.displayName }}</p>
-        <!-- <Profile :currentUser="currentUser" /> -->
-      </div>
+      <client-only>
+        <div class="user_profile">
+          <div class="user_profile-img"><img :src="currentUser.imagePath" :alt="currentUser.displayName" /></div>
+          <p class="user_profile-name">{{ currentUser.displayName }}</p>
+          <!-- <Profile :currentUser="currentUser" /> -->
+          <button class="button" @click="signOut">ログアウト</button>
+        </div>
+      </client-only>
     </section>
   </main>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, useRoute } from '@nuxtjs/composition-api'
+import { defineComponent, reactive, useRoute, useRouter, useContext } from '@nuxtjs/composition-api'
 import { db } from "~/plugins/firebase"
 import currentUser from '~/types/index'
 import Profile from '~/components/ui/Profile.vue'
@@ -22,6 +25,8 @@ export default defineComponent({
     Profile
   },
   setup() {
+    const { store } = useContext()
+    const router = useRouter()
     const route = useRoute()
     const id: string = route.value.params.uid
 
@@ -41,8 +46,14 @@ export default defineComponent({
       }
     )
 
+    const signOut = async() => {
+      await store.dispatch('auth/logout')
+      router.push('/')
+    }
+
     return {
-      currentUser
+      currentUser,
+      signOut
     }
   },
 })
@@ -93,6 +104,21 @@ export default defineComponent({
         font-family: $font-Montserrat;
       }
     }
+  }
+}
+.button {
+  width: 140px;
+  height: 40px;
+  margin-left: auto;
+  margin-right: 20px;
+  background: $ui-main;
+  font-weight: bold;
+  border-radius: 20px;
+  align-self: flex-end;
+  transition: .3s;
+  &:hover {
+    background: $ui-sub;
+    color: $font-yellow
   }
 }
 </style>

@@ -58,6 +58,16 @@ export default {
       '~assets/vars/*.scss'
     ]
   },
+  
+  firebase: {
+    services: {
+      auth: {
+        initialize: {
+          onAuthStateChangedAction: 'auth/onAuthStateChanged'
+        },
+      },
+    }
+  },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
@@ -82,7 +92,8 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    '@nuxtjs/style-resources'
+    '@nuxtjs/style-resources',
+    '@nuxtjs/firebase'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

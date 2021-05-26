@@ -10,14 +10,10 @@ export const state = () => ({
 export type RootState = ReturnType<typeof state>;
 
 export const getters: GetterTree<RootState, RootState> = {
-  login: state => state.isLogin,
+  isLogin: state => state.isLogin,
 }
 
 export const mutations: MutationTree<RootState> = {
-  INIT(state) {
-    state.isLogin = false
-    state.currentUser = null
-  },
   SET_USER(state, payload) {
     state.isLogin = true
     state.currentUser = payload
@@ -30,8 +26,19 @@ export const mutations: MutationTree<RootState> = {
 }
 
 export const actions: ActionTree<RootState, RootState> = {
-  init({ commit }) {
-    commit('INIT')
+  onAuthStateChanged({ commit, getters }, { authUser }) {
+    if (!authUser) {
+      commit('RESET')
+      return
+    } else if (getters.isLogin) {
+      return
+    }
+
+    commit('SET_USER', {
+      uid: authUser.uid,
+      displayName: authUser.displayName,
+      imagePath: authUser.photoURL,
+    } as currentUser)
   },
   async login({ commit }): Promise<void> {
     try {
