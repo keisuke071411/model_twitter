@@ -1,16 +1,15 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex'
-import firebase, { auth } from '~/plugins/firebase'
-import currentUser from '~/types/index'
+import CurrentUser from '~/types/index'
 
 export const state = () => ({
   isLogin: false as Boolean,
-  currentUser: null
+  currentUser: null,
 })
 
-export type RootState = ReturnType<typeof state>;
+export type RootState = ReturnType<typeof state>
 
 export const getters: GetterTree<RootState, RootState> = {
-  isLogin: state => state.isLogin,
+  isLogin: (state) => state.isLogin,
 }
 
 export const mutations: MutationTree<RootState> = {
@@ -38,56 +37,59 @@ export const actions: ActionTree<RootState, RootState> = {
       uid: authUser.uid,
       displayName: authUser.displayName,
       imagePath: authUser.photoURL,
-    } as currentUser)
+    } as CurrentUser)
   },
   async login({ commit }): Promise<void> {
     try {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const res = await auth.signInWithPopup(provider)
+      const provider = new this.$fireModule.auth.GoogleAuthProvider()
+      const res = await this.$fire.auth.signInWithPopup(provider)
 
-      if (!res) throw Error;
+      if (!res) throw Error
 
-      const currentUser: currentUser = {
+      const currentUser: CurrentUser = {
         uid: res.user?.uid as string,
         displayName: res.user?.displayName as string,
-        imagePath: res.user?.photoURL as string
+        imagePath: res.user?.photoURL as string,
       }
 
       commit('SET_USER', currentUser)
     } catch {
-      return alert('アカウント作成に失敗しました。再度お試しください。');
+      return alert('アカウント作成に失敗しました。再度お試しください。')
     }
   },
   async signup({ commit }): Promise<void> {
     try {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const res = await auth.signInWithPopup(provider)
+      const provider = new this.$fireModule.auth.GoogleAuthProvider()
+      const res = await this.$fire.auth.signInWithPopup(provider)
 
-      if (!res) throw Error;
+      if (!res) throw Error
 
-      const currentUser: currentUser = {
+      const currentUser: CurrentUser = {
         uid: res.user?.uid as string,
         displayName: res.user?.displayName as string,
-        imagePath: res.user?.photoURL as string
+        imagePath: res.user?.photoURL as string,
       }
 
-      await firebase.firestore().collection('users').doc(currentUser.uid).set({
-        uid: currentUser.uid as string,
-        displayName: currentUser.displayName as string,
-        imagePath: currentUser.imagePath as string
-      })
+      await this.$fire.firestore
+        .collection('users')
+        .doc(currentUser.uid)
+        .set({
+          uid: currentUser.uid as string,
+          displayName: currentUser.displayName as string,
+          imagePath: currentUser.imagePath as string,
+        })
 
       commit('SET_USER', currentUser)
     } catch {
-      return alert('アカウント作成に失敗しました。再度お試しください。');
+      return alert('アカウント作成に失敗しました。再度お試しください。')
     }
   },
   async logout({ commit }): Promise<void> {
     try {
-      await auth.signOut()
+      await this.$fire.auth.signOut()
       commit('RESET')
     } catch {
-      return alert('ログアウトに失敗しました。再度お試しください。');
+      return alert('ログアウトに失敗しました。再度お試しください。')
     }
-  }
+  },
 }

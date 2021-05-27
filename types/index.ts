@@ -1,4 +1,4 @@
-export default interface currentUser {
+export default interface CurrentUser {
   uid: string
   displayName: string
   imagePath: string

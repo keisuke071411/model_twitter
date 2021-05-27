@@ -58,16 +58,6 @@ export default {
       '~assets/vars/*.scss'
     ]
   },
-  
-  firebase: {
-    services: {
-      auth: {
-        initialize: {
-          onAuthStateChangedAction: 'auth/onAuthStateChanged'
-        },
-      },
-    }
-  },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
@@ -83,7 +73,7 @@ export default {
     '@nuxtjs/composition-api/module',
     '@nuxt/typescript-build',
     '@nuxtjs/vuetify',
-    ['@nuxtjs/google-fonts', { families: { 'Noto+Sans+JP': [100, 200, 300, 400, 500, 600, 700, 800, 900], 'Open+Sans': [100, 200, 300, 400, 500, 600, 700, 800, 900], 'Montserrat': [100,200,300,400,500,600,700,800,900] }, display: 'block', download: true, override: true, inject: true }],
+    //['@nuxtjs/google-fonts', { families: { 'Noto+Sans+JP': [100, 200, 300, 400, 500, 600, 700, 800, 900], 'Open+Sans': [100, 200, 300, 400, 500, 600, 700, 800, 900], 'Montserrat': [100,200,300,400,500,600,700,800,900] }, display: 'block', download: true, override: true, inject: true }],
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -95,6 +85,33 @@ export default {
     '@nuxtjs/style-resources',
     '@nuxtjs/firebase'
   ],
+
+  // Firebase setting
+  firebase: {
+    lazy: false,
+    config: {
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_APP_ID,
+      measurementId: process.env.FIREBASE_MEASUREMENT_ID
+    },
+    onFirebaseHosting: true,
+    services: {
+      auth: {
+        initialize: {
+          onAuthStateChangedAction: "auth/onAuthStateChanged"
+        },
+      },
+      firestore: {
+        enablePersistence: {
+          synchronizeTabs: true
+        }
+      },
+    }
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},

@@ -1,10 +1,14 @@
 <template>
   <main class="main">
     <section class="user">
-      <div class="user_logo"><img src="~/static/images/logo.svg" alt="Hack'z Memo" /></div>
-      <client-only>
+      <div class="user_logo">
+        <img src="~/static/images/logo.svg" alt="Hack'z Memo" />
+      </div>
+      <client-only v-if="currentUser">
         <div class="user_profile">
-          <div class="user_profile-img"><img :src="currentUser.imagePath" :alt="currentUser.displayName" /></div>
+          <div class="user_profile-img">
+            <img :src="currentUser.imagePath" :alt="currentUser.displayName" />
+          </div>
           <p class="user_profile-name">{{ currentUser.displayName }}</p>
           <!-- <Profile :currentUser="currentUser" /> -->
           <button class="button" @click="signOut">ログアウト</button>
@@ -15,45 +19,47 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, useRoute, useRouter, useContext } from '@nuxtjs/composition-api'
-import { db } from "~/plugins/firebase"
-import currentUser from '~/types/index'
+import {
+  defineComponent,
+  useRoute,
+  useRouter,
+  useContext,
+  useAsync,
+  ref,
+} from '@nuxtjs/composition-api'
+import CurrentUser from '~/types/index'
 import Profile from '~/components/ui/Profile.vue'
 
 export default defineComponent({
   components: {
-    Profile
+    Profile,
   },
   setup() {
-    const { store } = useContext()
+    const { store, $fire } = useContext()
     const router = useRouter()
     const route = useRoute()
     const id: string = route.value.params.uid
 
-    const currentUser: currentUser = reactive({
-      uid: '',
-      displayName: '',
-      imagePath: ''
+    const currentUser = ref<CurrentUser>()
+
+    useAsync(() => {
+      $fire.firestore
+        .collection('users')
+        .doc(id)
+        .get()
+        .then((res) => {
+          currentUser.value = res.data() as CurrentUser
+        })
     })
 
-    db.collection('users').doc(id).get()
-      .then( res => {
-        const user = res.data()
-
-        currentUser.uid = user?.uid as string
-        currentUser.displayName = user?.displayName as string,
-        currentUser.imagePath = user?.imagePath as string
-      }
-    )
-
-    const signOut = async() => {
+    const signOut = async () => {
       await store.dispatch('auth/logout')
       router.push('/')
     }
 
     return {
       currentUser,
-      signOut
+      signOut,
     }
   },
 })
@@ -115,10 +121,10 @@ export default defineComponent({
   font-weight: bold;
   border-radius: 20px;
   align-self: flex-end;
-  transition: .3s;
+  transition: 0.3s;
   &:hover {
     background: $ui-sub;
-    color: $font-yellow
+    color: $font-yellow;
   }
 }
 </style>
