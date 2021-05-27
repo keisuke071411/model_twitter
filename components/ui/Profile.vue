@@ -8,20 +8,20 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api'
-import currentUser from '~/types/index'
+import CurrentUser from '~/types/index'
 
 export default defineComponent({
   porps: {
     currentUser: {
-      type: Object as PropType<currentUser>
-    }
+      type: Object as PropType<CurrentUser>,
+      required: true,
+    },
   },
   setup(props) {
     console.log(props)
   },
 })
 </script>
-
 
 <style lang="scss" scoped>
 .profile {
