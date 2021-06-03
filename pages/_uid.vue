@@ -6,11 +6,7 @@
       </div>
       <client-only v-if="currentUser">
         <div class="user_profile">
-          <div class="user_profile-img">
-            <img :src="currentUser.imagePath" :alt="currentUser.displayName" />
-          </div>
-          <p class="user_profile-name">{{ currentUser.displayName }}</p>
-          <!-- <Profile :currentUser="currentUser" /> -->
+          <Profile :currentUser="currentUser" />
           <button class="button" @click="signOut">ログアウト</button>
         </div>
       </client-only>
@@ -31,6 +27,7 @@ import CurrentUser from '~/types/index'
 import Profile from '~/components/ui/Profile.vue'
 
 export default defineComponent({
+  middleware: 'authenticated',
   components: {
     Profile,
   },
@@ -52,6 +49,8 @@ export default defineComponent({
         })
     })
 
+    const test = ref('hoge')
+
     const signOut = async () => {
       await store.dispatch('auth/logout')
       router.push('/')
@@ -60,6 +59,7 @@ export default defineComponent({
     return {
       currentUser,
       signOut,
+      test
     }
   },
 })

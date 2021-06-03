@@ -1,8 +1,7 @@
 <template>
   <div class="profile">
-    <!-- <div class="profile_img"><img :src="currentUser.imagePath" :alt="currentUser.displayName" /></div>
-    <p class="profile_name">{{ currentUser.displayName }}</p> -->
-    {{ currentUser }}
+    <div class="profile_img"><img :src="currentUser.imagePath" :alt="currentUser.displayName" /></div>
+    <p class="profile_name">{{ currentUser.displayName }}</p>
   </div>
 </template>
 
@@ -11,7 +10,7 @@ import { defineComponent, PropType } from '@vue/composition-api'
 import CurrentUser from '~/types/index'
 
 export default defineComponent({
-  porps: {
+  props: {
     currentUser: {
       type: Object as PropType<CurrentUser>,
       required: true,

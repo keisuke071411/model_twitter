@@ -53,22 +53,9 @@ export const actions: ActionTree<RootState, RootState> = {
       }
 
       commit('SET_USER', currentUser)
-    } catch {
-      return alert('アカウント作成に失敗しました。再度お試しください。')
-    }
-  },
-  async signup({ commit }): Promise<void> {
-    try {
-      const provider = new this.$fireModule.auth.GoogleAuthProvider()
-      const res = await this.$fire.auth.signInWithPopup(provider)
 
-      if (!res) throw Error
-
-      const currentUser: CurrentUser = {
-        uid: res.user?.uid as string,
-        displayName: res.user?.displayName as string,
-        imagePath: res.user?.photoURL as string,
-      }
+      const user = await this.$fire.firestore.collection('user').doc(currentUser.uid).get()
+      if (user.data()) return
 
       await this.$fire.firestore
         .collection('users')
@@ -78,8 +65,6 @@ export const actions: ActionTree<RootState, RootState> = {
           displayName: currentUser.displayName as string,
           imagePath: currentUser.imagePath as string,
         })
-
-      commit('SET_USER', currentUser)
     } catch {
       return alert('アカウント作成に失敗しました。再度お試しください。')
     }
