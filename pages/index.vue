@@ -12,6 +12,7 @@
 import { defineComponent, useContext, computed } from '@nuxtjs/composition-api'
 
 export default defineComponent({
+  middleware: 'authenticated',
   setup() {
     const { store } = useContext()
 

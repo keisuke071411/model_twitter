@@ -18,7 +18,7 @@ export default defineComponent({
     const router = useRouter()
 
     const googleSignUp = async() => {
-      await store.dispatch('auth/signup')
+      await store.dispatch('auth/login')
       router.push('/')
     }
     return {
