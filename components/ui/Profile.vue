@@ -2,33 +2,32 @@
   <div class="profile">
     <div class="profile_img"><img :src="currentUser.imagePath" :alt="currentUser.displayName" /></div>
     <p class="profile_name">{{ currentUser.displayName }}</p>
+    <Logout />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import CurrentUser from '~/types/index'
+import Logout from '../button/Logout.vue'
 
 export default defineComponent({
+  components: { Logout },
   props: {
     currentUser: {
       type: Object as PropType<CurrentUser>,
       required: true,
     },
   },
-  setup(props) {
-    console.log(props)
-  },
 })
 </script>
 
 <style lang="scss" scoped>
 .profile {
-  width: 820px;
+  width: 100%;
   padding: 20px 8px;
   display: flex;
   justify-content: flex-start;
-  border: 1px solid $ui-sub;
   &_img {
     width: 100px;
     height: 100px;
