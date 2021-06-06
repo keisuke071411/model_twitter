@@ -4,12 +4,12 @@
       <div class="user_logo">
         <img src="~/static/images/logo.svg" alt="Hack'z Memo" />
       </div>
-      <client-only v-if="currentUser">
-        <div class="user_profile">
+      <div class="user_main">
+        <client-only v-if="currentUser">
+          <Tab :link="currentUser.uid" />
           <Profile :currentUser="currentUser" />
-          <button class="button" @click="signOut">ログアウト</button>
-        </div>
-      </client-only>
+        </client-only>
+      </div>
     </section>
   </main>
 </template>
@@ -18,22 +18,22 @@
 import {
   defineComponent,
   useRoute,
-  useRouter,
   useContext,
   useAsync,
   ref,
 } from '@nuxtjs/composition-api'
 import CurrentUser from '~/types/index'
 import Profile from '~/components/ui/Profile.vue'
+import Tab from '~/components/ui/Tab.vue'
 
 export default defineComponent({
   middleware: 'authenticated',
   components: {
     Profile,
+    Tab
   },
   setup() {
-    const { store, $fire } = useContext()
-    const router = useRouter()
+    const { $fire } = useContext()
     const route = useRoute()
     const id: string = route.value.params.uid
 
@@ -49,17 +49,8 @@ export default defineComponent({
         })
     })
 
-    const test = ref('hoge')
-
-    const signOut = async () => {
-      await store.dispatch('auth/logout')
-      router.push('/')
-    }
-
     return {
       currentUser,
-      signOut,
-      test
     }
   },
 })
@@ -73,7 +64,7 @@ export default defineComponent({
   background: $ui-black;
   color: $font-white;
   .user {
-    widows: 100%;
+    width: 100%;
     display: flex;
     justify-content: flex-start;
     &_logo {
@@ -87,44 +78,10 @@ export default defineComponent({
         object-fit: contain;
       }
     }
-    &_profile {
+    &_main {
       width: 820px;
-      padding: 20px 8px;
-      display: flex;
-      justify-content: flex-start;
       border: 1px solid $ui-sub;
-      &-img {
-        width: 100px;
-        height: 100px;
-        margin-right: 20px;
-        img {
-          width: 100%;
-          height: 100%;
-          vertical-align: top;
-          object-fit: contain;
-        }
-      }
-      &-name {
-        font-size: 24px;
-        font-weight: bold;
-        font-family: $font-Montserrat;
-      }
     }
-  }
-}
-.button {
-  width: 140px;
-  height: 40px;
-  margin-left: auto;
-  margin-right: 20px;
-  background: $ui-main;
-  font-weight: bold;
-  border-radius: 20px;
-  align-self: flex-end;
-  transition: 0.3s;
-  &:hover {
-    background: $ui-sub;
-    color: $font-yellow;
   }
 }
 </style>
