@@ -22,7 +22,7 @@ import {
   useAsync,
   ref,
 } from '@nuxtjs/composition-api'
-import CurrentUser from '~/types/index'
+import { CurrentUser } from '~/types/index'
 import Profile from '~/components/ui/Profile.vue'
 import Tab from '~/components/ui/Tab.vue'
 

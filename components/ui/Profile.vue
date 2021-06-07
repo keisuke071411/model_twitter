@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
-import CurrentUser from '~/types/index'
+import { CurrentUser } from '~/types/index'
 import Logout from '../button/Logout.vue'
 
 export default defineComponent({

@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
-import CurrentUser from '~/types/index'
+import { CurrentUser } from '~/types/index'
 import ShareButton from '~/components/button/ShareButton.vue'
 
 export default defineComponent({

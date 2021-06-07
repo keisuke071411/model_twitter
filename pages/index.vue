@@ -15,7 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, computed } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, computed, ref, useAsync } from '@nuxtjs/composition-api'
+import { PostData } from '~/types/index'
 import Tab from '~/components/ui/Tab.vue'
 import Post from '~/components/ui/Post.vue'
 import ShareButton from '~/components/button/ShareButton.vue'
@@ -28,7 +29,25 @@ export default defineComponent({
     ShareButton
   },
   setup() {
-    const { store, app } = useContext()
+    const { store, $fire } = useContext()
+
+    const postData = ref<PostData>({
+      post: '',
+      uid: ''
+    })
+
+    useAsync(() => {
+      $fire.firestore.collection('post')
+      .get()
+      .then(res => {
+        res.forEach(post => {
+          postData.value.post = post.data().post
+          postData.value.uid = post.data().uid
+        })
+      })
+    })
+
+    console.log(postData.value)
 
     return {
       currentUser: computed(() => store.state.auth.currentUser),
