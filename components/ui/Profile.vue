@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
-import CurrentUser from '~/types/index'
+import { CurrentUser } from '~/types/index'
 import Logout from '../button/Logout.vue'
 
 export default defineComponent({
@@ -28,6 +28,7 @@ export default defineComponent({
   padding: 20px 8px;
   display: flex;
   justify-content: flex-start;
+  border-bottom: 1px solid $ui-sub;
   &_img {
     width: 100px;
     height: 100px;
