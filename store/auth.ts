@@ -1,5 +1,5 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex'
-import CurrentUser from '~/types/index'
+import { CurrentUser } from '~/types/index'
 
 export const state = () => ({
   isLogin: false as Boolean,
