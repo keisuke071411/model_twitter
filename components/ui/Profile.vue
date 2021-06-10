@@ -28,6 +28,7 @@ export default defineComponent({
   padding: 20px 8px;
   display: flex;
   justify-content: flex-start;
+  border-bottom: 1px solid $ui-sub;
   &_img {
     width: 100px;
     height: 100px;

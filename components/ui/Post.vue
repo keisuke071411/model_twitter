@@ -33,17 +33,19 @@ export default defineComponent({
   },
   setup(props) {
     const text = ref<String>()
-    const { app } = useContext()
+    const { $fire } = useContext()
 
     const PostMemo = async(): Promise<void> => {
       try {
-        await app.$fire.firestore.collection('post').doc().set({
+        await $fire.firestore.collection('post').doc().set({
           uid: props.currentUser.uid,
           post: text.value,
+          created_at: new Date().toLocaleString('ja')
         })
 
         text.value = ''
-      } catch {
+      } catch(err) {
+        console.log(err)
         return alert('投稿に失敗しました。再度お試しください。')
       }
     }

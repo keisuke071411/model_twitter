@@ -6,5 +6,10 @@ export interface CurrentUser {
 
 export interface PostData {
   post: string
-  uid: string
+  user: CurrentUser
+  created_at: string
+}
+
+export interface PostType {
+  postData: PostData[]
 }

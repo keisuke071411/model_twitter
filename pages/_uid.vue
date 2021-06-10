@@ -8,6 +8,7 @@
         <client-only v-if="currentUser">
           <Tab :link="currentUser.uid" />
           <Profile :currentUser="currentUser" />
+          <Article :postData="allPost.postData" />
         </client-only>
       </div>
     </section>
@@ -21,16 +22,19 @@ import {
   useContext,
   useAsync,
   ref,
+  reactive
 } from '@nuxtjs/composition-api'
-import { CurrentUser } from '~/types/index'
+import { CurrentUser, PostType } from '~/types/index'
 import Profile from '~/components/ui/Profile.vue'
 import Tab from '~/components/ui/Tab.vue'
+import Article from '~/components/ui/Article.vue'
 
 export default defineComponent({
   middleware: 'authenticated',
   components: {
     Profile,
-    Tab
+    Tab,
+    Article
   },
   setup() {
     const { $fire } = useContext()
@@ -38,6 +42,16 @@ export default defineComponent({
     const id: string = route.value.params.uid
 
     const currentUser = ref<CurrentUser>()
+    
+    const allPost = reactive<PostType>({
+      postData: []
+    })
+
+    const postUser = reactive<CurrentUser>({
+      uid: '',
+      displayName: '',
+      imagePath: '',
+    })
 
     useAsync(() => {
       $fire.firestore
@@ -47,10 +61,42 @@ export default defineComponent({
         .then((res) => {
           currentUser.value = res.data() as CurrentUser
         })
+
+      $fire.firestore.collection('post')
+      .get()
+      .then(res => {
+        res.forEach(post => {
+          $fire.firestore.collection('users').doc(post.data().uid).get()
+          .then(res => {
+            postUser.uid = res.data().uid,
+            postUser.displayName = res.data().displayName
+            postUser.imagePath = res.data().imagePath
+          })
+          if (post.data().uid === currentUser.value?.uid) {
+            allPost.postData.push({
+              post: post.data().post,
+              user: postUser,
+              created_at: post.data().created_at
+            })
+          }
+        })
+
+        allPost.postData.sort((a, b) => {
+          if (a.created_at < b.created_at) {
+            return 1
+          } else if (a.created_at > b.created_at) {
+            return -1
+          } else {
+            return 0
+          }
+        })
+      })
+
     })
 
     return {
       currentUser,
+      allPost
     }
   },
 })
@@ -59,7 +105,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .main {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 0 90px;
   background: $ui-black;
   color: $font-white;
