@@ -6,9 +6,11 @@
       </div>
       <div class="user_main">
         <client-only v-if="currentUser">
-          <Tab :link="currentUser.uid" />
+          <Tabs :link="currentUser.uid" />
           <Profile :currentUser="currentUser" />
-          <Article :postData="allPost.postData" />
+        </client-only>
+        <client-only v-if="posts.length">
+          <Articles v-for="(post, i) in posts" :key="i" :post="post" />
         </client-only>
       </div>
     </section>
@@ -16,87 +18,28 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  useRoute,
-  useContext,
-  useAsync,
-  ref,
-  reactive
-} from '@nuxtjs/composition-api'
-import { CurrentUser, PostType } from '~/types/index'
+import { defineComponent, useRoute } from '@nuxtjs/composition-api'
+import { usePostsByUid } from '~/composables/usePostsByUid'
 import Profile from '~/components/ui/Profile.vue'
-import Tab from '~/components/ui/Tab.vue'
-import Article from '~/components/ui/Article.vue'
+import Tabs from '~/components/ui/Tabs.vue'
+import Articles from '~/components/ui/Articles.vue'
 
 export default defineComponent({
   middleware: 'authenticated',
   components: {
     Profile,
-    Tab,
-    Article
+    Tabs,
+    Articles
   },
   setup() {
-    const { $fire } = useContext()
     const route = useRoute()
     const id: string = route.value.params.uid
 
-    const currentUser = ref<CurrentUser>()
-    
-    const allPost = reactive<PostType>({
-      postData: []
-    })
-
-    const postUser = reactive<CurrentUser>({
-      uid: '',
-      displayName: '',
-      imagePath: '',
-    })
-
-    useAsync(() => {
-      $fire.firestore
-        .collection('users')
-        .doc(id)
-        .get()
-        .then((res) => {
-          currentUser.value = res.data() as CurrentUser
-        })
-
-      $fire.firestore.collection('post')
-      .get()
-      .then(res => {
-        res.forEach(post => {
-          $fire.firestore.collection('users').doc(post.data().uid).get()
-          .then(res => {
-            postUser.uid = res.data().uid,
-            postUser.displayName = res.data().displayName
-            postUser.imagePath = res.data().imagePath
-          })
-          if (post.data().uid === currentUser.value?.uid) {
-            allPost.postData.push({
-              post: post.data().post,
-              user: postUser,
-              created_at: post.data().created_at
-            })
-          }
-        })
-
-        allPost.postData.sort((a, b) => {
-          if (a.created_at < b.created_at) {
-            return 1
-          } else if (a.created_at > b.created_at) {
-            return -1
-          } else {
-            return 0
-          }
-        })
-      })
-
-    })
+    const { posts, currentUser } = usePostsByUid(id)
 
     return {
       currentUser,
-      allPost
+      posts
     }
   },
 })

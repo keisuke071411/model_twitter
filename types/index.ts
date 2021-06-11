@@ -9,7 +9,3 @@ export interface PostData {
   user: CurrentUser
   created_at: string
 }
-
-export interface PostType {
-  postData: PostData[]
-}
