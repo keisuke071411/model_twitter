@@ -28,8 +28,6 @@ export const usePosts = () => {
         (doc) => ({ ...doc.data(), uid: doc.id } as CurrentUser)
       )
 
-      console.log(users)
-
       // postListのデータとusersのデータを結合
       for (let i = 0; i < postList.length; i++) {
         postList[i].user = users[i]
