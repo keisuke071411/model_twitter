@@ -6,32 +6,34 @@ export const usePosts = () => {
 
   const posts = ref<PostData[]>([])
 
-  useAsync(async (): Promise<void> => {
+  useAsync(async () => {
     try {
       const snapshot = await $fire.firestore
         .collection('post')
         .orderBy('created_at', 'desc')
         .get()
 
-      const postDocs = snapshot.docs.map( async (post) => {
-        const id = post.data().uid
-        const res = await $fire.firestore
-          .collection('users')
-          .doc(id)
-          .get()
+      // snapshotをPostDataの配列に変換
+      const postList = snapshot.docs.map(
+        (doc) => ({ ...doc.data() } as PostData)
+      )
 
-        const user: CurrentUser = {
-          uid: res.data()?.uid,
-          displayName: res.data()?.displayName,
-          imagePath: res.data()?.imagePath,
-        }
+      // snapshotから、uidを取得し、firestoreからデータを取得
+      const promiseList = snapshot.docs.map((doc) =>
+        $fire.firestore.collection('users').doc(doc.data().uid).get()
+      )
 
-        posts.value.push({
-          post: post.data().post,
-          user: user,
-          created_at: post.data().created_at
-        })
-      })
+      // promiseListをPromise.allで同期処理し、usersに代入
+      const users: CurrentUser[] = (await Promise.all(promiseList)).map(
+        (doc) => ({ ...doc.data(), uid: doc.id } as CurrentUser)
+      )
+
+      // postListのデータとusersのデータを結合
+      for (let i = 0; i < postList.length; i++) {
+        postList[i].user = users[i]
+      }
+
+      posts.value = postList
     } catch (error) {
       alert(error.message)
     }
