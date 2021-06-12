@@ -9,7 +9,7 @@ on:
 
 env:
   FIREBASE_TOKEN: ${{ secrets.FIREBASE_API_KEY }}
-  PROJECT_ID: 'model_twitter'
+  PROJECT_ID: 'model-twitter'
 
 jobs:
   firebase-deploy:
