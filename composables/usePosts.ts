@@ -8,23 +8,24 @@ export const usePosts = () => {
 
   useAsync(async (): Promise<void> => {
     try {
-      const docs = await $fire.firestore
+      const snapshot = await $fire.firestore
         .collection('post')
         .orderBy('created_at', 'desc')
         .get()
-  
-      docs.forEach(async (post) => {
+
+      const postDocs = snapshot.docs.map( async (post) => {
+        const id = post.data().uid
         const res = await $fire.firestore
-        .collection('users')
-        .doc(post.data().uid)
-        .get()
-        
+          .collection('users')
+          .doc(id)
+          .get()
+
         const user: CurrentUser = {
           uid: res.data()?.uid,
           displayName: res.data()?.displayName,
           imagePath: res.data()?.imagePath,
         }
-  
+
         posts.value.push({
           post: post.data().post,
           user: user,
