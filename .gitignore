@@ -92,3 +92,5 @@ sw.*
 # Font Optimizations
 fonts.css
 fonts
+
+.firebase
