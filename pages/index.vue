@@ -6,80 +6,42 @@
     <section class="memo">
       <div class="memo_main">
         <client-only v-if="currentUser">
-          <Tab :link="currentUser.uid" />
+          <Tabs :link="currentUser.uid" />
           <Post :currentUser="currentUser" />
         </client-only>
       </div>
-      <client-only>
-        <Article :postData="allPost.postData" />
+      <client-only v-if="posts.length">
+        <div class="memo_list">
+          <Articles v-for="(post, i) in posts" :key="i" :post="post" />
+        </div>
       </client-only>
     </section>
   </main>
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, computed, useAsync, reactive } from '@nuxtjs/composition-api'
-import { CurrentUser, PostType } from '~/types/index'
-import Tab from '~/components/ui/Tab.vue'
+import { defineComponent, useContext, computed } from '@nuxtjs/composition-api'
+import { usePosts } from '~/composables/usePosts'
+import Tabs from '~/components/ui/Tabs.vue'
 import Post from '~/components/ui/Post.vue'
-import Article from '~/components/ui/Article.vue'
+import Articles from '~/components/ui/Articles.vue'
 import ShareButton from '~/components/button/ShareButton.vue'
 
 export default defineComponent({
   middleware: 'authenticated',
   components: {
-    Tab,
+    Tabs,
     Post,
-    Article,
+    Articles,
     ShareButton
   },
   setup() {
-    const { store, $fire } = useContext()
-
-    const allPost = reactive<PostType>({
-      postData: []
-    })
-
-    const postUser = reactive<CurrentUser>({
-      uid: '',
-      displayName: '',
-      imagePath: '',
-    })
-
-    useAsync(() => {
-      $fire.firestore.collection('post')
-      .get()
-      .then(res => {
-        res.forEach(post => {
-          $fire.firestore.collection('users').doc(post.data().uid).get()
-          .then(res => {
-            console.log(res.data())
-            postUser.uid = res.data().uid,
-            postUser.displayName = res.data().displayName
-            postUser.imagePath = res.data().imagePath
-          })
-          allPost.postData.push({
-            post: post.data().post,
-            user: postUser,
-            created_at: post.data().created_at
-          })
-        })
-
-        allPost.postData.sort((a, b) => {
-          if (a.created_at < b.created_at) {
-            return 1
-          } else if (a.created_at > b.created_at) {
-            return -1
-          } else {
-            return 0
-          }
-        })
-      })
-    })
+    const { store } = useContext()
+    const { posts } = usePosts()
 
     return {
       currentUser: computed(() => store.state.auth.currentUser),
-      allPost
+      posts
     }
   },
 })
@@ -112,6 +74,9 @@ export default defineComponent({
     &_main {
       width: 100%;
       border-bottom: 1px solid $ui-sub;
+    }
+    &_list {
+      width: 100%;
     }
   }
 }

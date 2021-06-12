@@ -45,7 +45,6 @@ export default defineComponent({
 
         text.value = ''
       } catch(err) {
-        console.log(err)
         return alert('投稿に失敗しました。再度お試しください。')
       }
     }
