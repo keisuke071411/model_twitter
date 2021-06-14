@@ -2,7 +2,7 @@ import { useContext, useAsync, ref } from '@nuxtjs/composition-api'
 import { CurrentUser, PostData } from '~/types/index'
 
 export const usePostsByUid = (id: string) => {
-  const { $fire, $fireModule } = useContext()
+  const { $fire } = useContext()
 
   const posts = ref<PostData[]>([])
   const currentUser = ref<CurrentUser>()
@@ -23,30 +23,16 @@ export const usePostsByUid = (id: string) => {
         .get()
 
       postDocs.forEach(async (post) => {
-        const postUserDoc = await $fire.firestore
-          .collection('users')
-          .doc(post.data().uid)
-          .get()
-
-        const user: CurrentUser = {
-          uid: postUserDoc.data()?.uid,
-          displayName: postUserDoc.data()?.displayName,
-          imagePath: postUserDoc.data()?.imagePath,
-        }
-
-        const created_at = $fireModule.firestore.FieldValue.serverTimestamp()
-
         posts.value.push({
           post: post.data().post,
-          user: user,
-          created_at,
+          user: currentUser.value as CurrentUser,
+          created_at: post.data().created_at,
         })
       })
     } catch (error) {
       alert(error.message)
     }
   })
-
 
   return { posts, currentUser }
 }
