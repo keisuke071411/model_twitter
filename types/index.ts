@@ -1,3 +1,5 @@
+import firebase from 'firebase'
+
 export interface CurrentUser {
   uid: string
   displayName: string
@@ -7,5 +9,5 @@ export interface CurrentUser {
 export interface PostData {
   post: string
   user: CurrentUser
-  created_at: string
+  created_at: firebase.firestore.FieldValue | firebase.firestore.Timestamp
 }

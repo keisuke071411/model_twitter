@@ -2,7 +2,7 @@ import { useContext, useAsync, ref } from '@nuxtjs/composition-api'
 import { CurrentUser, PostData } from '~/types/index'
 
 export const usePostsByUid = (id: string) => {
-  const { $fire } = useContext()
+  const { $fire, $fireModule } = useContext()
 
   const posts = ref<PostData[]>([])
   const currentUser = ref<CurrentUser>()
@@ -34,10 +34,12 @@ export const usePostsByUid = (id: string) => {
           imagePath: postUserDoc.data()?.imagePath,
         }
 
+        const created_at = $fireModule.firestore.FieldValue.serverTimestamp()
+
         posts.value.push({
           post: post.data().post,
           user: user,
-          created_at: post.data().created_at
+          created_at,
         })
       })
     } catch (error) {
