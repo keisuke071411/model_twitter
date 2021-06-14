@@ -41,7 +41,7 @@ export default defineComponent({
 
     return {
       currentUser: computed(() => store.state.auth.currentUser),
-      posts
+      posts,
     }
   },
 })

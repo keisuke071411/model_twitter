@@ -7,12 +7,13 @@
       </div>
       <p class="article_content-post">{{ post.post }}</p>
     </div>
-    <p class="article_cerated">{{ post.created_at }}</p>
+    <p class="article_cerated">{{ getCreatedAt() }}</p>
   </article>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import moment from 'moment'
 import { PostData } from '~/types/index'
 
 export default defineComponent({
@@ -21,6 +22,13 @@ export default defineComponent({
       type: Object as PropType<PostData>,
       required: true
     }
+  },
+  setup(props) {
+    const getCreatedAt = (): string => {
+      const createdAt = props.post.created_at as FirebaseFirestore.Timestamp
+      return moment(createdAt.toDate()).format('YYYY年MM月DD日 hh時mm分')
+    }
+    return { getCreatedAt }
   },
 })
 </script>

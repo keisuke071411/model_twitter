@@ -33,14 +33,14 @@ export default defineComponent({
   },
   setup(props) {
     const text = ref<String>()
-    const { $fire } = useContext()
+    const { $fire, $fireModule } = useContext()
 
     const PostMemo = async(): Promise<void> => {
       try {
         await $fire.firestore.collection('post').doc().set({
           uid: props.currentUser.uid,
           post: text.value,
-          created_at: new Date().toLocaleString('ja')
+          created_at: $fireModule.firestore.FieldValue.serverTimestamp(),
         })
 
         text.value = ''
