@@ -18,7 +18,7 @@
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/firebase": "^7.6.1",
     "@nuxtjs/pwa": "^3.3.5",
-    "core-js": "^3.14.0",
+    "core-js": "^3.17.3",
     "firebase-admin": "^9.11.1",
     "firebase": "^8.10.0",
     "moment": "^2.29.1",
